@@ -30,6 +30,7 @@ sed -i "s#<SED_NFS_IP>#${NFS_SERVER_IP}#g" ./yaml/deployment.yaml
 sed -i "s#<SED_NFS_PATH>#${NFS_SERVER_DIR}#g" ./yaml/deployment.yaml
 
 echo "设置完成，开始部署"
+oc new-project nfs-storage
 oc create -f ./yaml/rbac.yaml
 oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:nfs-storage:nfs-client-provisioner
 oc create -f ./yaml/deployment.yaml -f ./yaml/class.yaml
