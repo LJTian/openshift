@@ -23,6 +23,7 @@ fi
 
 echo "IP = [${NFS_SERVER_IP}] \nPATH = [$NFS_SERVER_PATH]\n"
 
+mkdir -p ./yaml/
 cp ./nfs_temp/*.yaml ./yaml/
 
 echo "设置 nfs IP 和 PATH"
