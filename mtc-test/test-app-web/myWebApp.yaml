@@ -6,6 +6,22 @@ metadata:
     app: http-server
 
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myWebPVC
+  namespace: my-web
+  labels:
+    app: http-server
+spec:
+  storageClassName: managed-nfs-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,11 +37,20 @@ spec:
       labels:
         app: http-server
     spec:
+      volumes:
+        - name: http-server-logs
+          persistentVolumeClaim:
+           claimName: myWebPVC
       containers:
       - image: 'harbor.chinauos.com/tlj-test/http-server:v0.2'
         name: http-server
         ports:
         - containerPort: 8080
+
+        volumeMounts:
+          - mountPath: "/opt/log/nginx"
+            name: http-server-logs
+            readOnly: false
 
 ---
 apiVersion: v1

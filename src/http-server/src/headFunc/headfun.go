@@ -40,8 +40,7 @@ func EditFile(ctx *gin.Context) {
 	}
 
 	hour, minute, second := time.Now().Clock()
-	fmt.Println(hour, minute, second)
-	time := fmt.Sprintf("%d:%d:%d\n", hour, minute, second)
+	time := fmt.Sprintf("%02d:%02d:%02d\n", hour, minute, second)
 	if _, err := f.Write([]byte(time)); err != nil {
 		f.Close() // ignore error; Write error takes precedence
 		log.Fatal(err)
@@ -52,6 +51,7 @@ func EditFile(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"fileName": fileName,
+		"data":     time,
 		"status":   "ok",
 	})
 }
