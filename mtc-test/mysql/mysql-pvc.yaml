@@ -5,6 +5,7 @@ metadata:
   labels:
     app: mysql
 
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -37,7 +38,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:latest
+        image: harbor.chinauos.com/uccps-test/mysql:latest
         env:                        
         - name: MYSQL_ROOT_PASSWORD
           value: "123123"
