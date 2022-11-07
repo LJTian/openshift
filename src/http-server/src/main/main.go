@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"os"
+	"src/headFunc"
 )
 
 func main() {
@@ -20,20 +20,10 @@ func main() {
 	fmt.Println("HostName is", hostName)
 
 	r := gin.Default()
-	r.GET("/", HeadFunc)
+	r.GET("/", headFunc.PrintHead)
+	r.GET("/edit-file", headFunc.EditFile)
 
 	r.Run(":" + "8080")
 
 	return
-}
-
-// HeadFunc 返回请求报文head内容
-func HeadFunc(ctx *gin.Context) {
-
-	resp := make(gin.H, 0)
-	for k, v := range ctx.Request.Header {
-		//fmt.Println(k, v)
-		resp[k] = v
-	}
-	ctx.JSON(http.StatusOK, resp)
 }
