@@ -25,7 +25,7 @@ spec:
       - image: 'harbor.chinauos.com/tlj-test/http-server:v0.2'
         name: http-server
         ports:
-        - containerPort: 80
+        - containerPort: 8080
 
 ---
 apiVersion: v1
@@ -37,8 +37,8 @@ metadata:
   namespace: my-web
 spec:
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
   selector:
     app: http-server
   type: LoadBalancer
