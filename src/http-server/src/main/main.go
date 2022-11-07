@@ -20,13 +20,7 @@ func main() {
 	fmt.Println("HostName is", hostName)
 
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"nodeName": nodeName,
-			"hostName": hostName,
-		})
-	})
-	r.GET("/print_head", HeadFunc)
+	r.GET("/", HeadFunc)
 
 	r.Run(":" + "8080")
 
