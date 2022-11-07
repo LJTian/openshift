@@ -30,7 +30,7 @@ func EditFile(ctx *gin.Context) {
 	} else {
 		fileName = "syslog.log"
 	}
-	fileName = "/opt/log/" + fileName
+	fileName = "/var/log/myweb/" + fileName
 	fmt.Println("fileName is: ", fileName)
 
 	// If the file doesn't exist, create it, or append to the file

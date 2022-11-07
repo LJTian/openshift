@@ -9,7 +9,7 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: myWebPVC
+  name: my-web-pvc
   namespace: my-web
   labels:
     app: http-server
@@ -40,15 +40,15 @@ spec:
       volumes:
         - name: http-server-logs
           persistentVolumeClaim:
-           claimName: myWebPVC
+           claimName: my-web-pvc
       containers:
-      - image: 'harbor.chinauos.com/tlj-test/http-server:v0.2'
+      - image: 'harbor.chinauos.com/tlj-test/http-server:v0.3'
         name: http-server
         ports:
         - containerPort: 8080
 
         volumeMounts:
-          - mountPath: "/opt/log/nginx"
+          - mountPath: "/var/log/myweb"
             name: http-server-logs
             readOnly: false
 
