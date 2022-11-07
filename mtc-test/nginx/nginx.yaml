@@ -22,7 +22,7 @@ spec:
         app: nginx
     spec:
       containers:
-      - image: nginx:1.17.6
+      - image: harbor.chinauos.com/uccps-test/nginx:1.17.6
         name: nginx
         ports:
         - containerPort: 80
