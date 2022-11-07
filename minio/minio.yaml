@@ -29,7 +29,7 @@ spec:
         emptyDir: {}
       containers:
       - name: minio
-        image: docker.io/minio/minio:latest
+        image: harbor.chinauos.com/uccps-test/minio:latest
         imagePullPolicy: IfNotPresent
         args:
         - server
@@ -97,7 +97,7 @@ spec:
         emptyDir: {}
       containers:
       - name: mc
-        image: docker.io/minio/mc:latest
+        image: harbor.chinauos.com/uccps-test/mc:latest
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
