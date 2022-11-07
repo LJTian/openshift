@@ -6,3 +6,4 @@
 ## 目录
 - 一键部署nfs CSI
 - 一键部署MinIO
+- mtc-test 测试用例
