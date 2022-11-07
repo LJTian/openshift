@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpserver-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: httpserver
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: httpserver
+    spec:
+      containers:
+        - name: httpserver
+          image: ljtian/homework-httpserver:v2.0
+          ports:
+            - containerPort: 8009
+          lifecycle:
+            postStart:
+              exec:
+                command: [ '/bin/sh', '-c', 'echo httpserver started!' ]
+
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /shell/healthz
+              port: 8009
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 30Mi
+            limits:
+              cpu: 100m
+              memory: 50Mi
+
+          volumeMounts:
+            - name: log-volume
+              mountPath: /httpServer/log
+      volumes:
+        - name: log-volume
+          emptyDir:
+            sizeLimit: 20Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpserver-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8009
+      targetPort: 8009
+  selector:
+    app: httpserver
