@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 NFS_SERVER_IP=$1
 NFS_SERVER_DIR=$2
