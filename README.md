@@ -10,5 +10,6 @@
 |  minio   |    3S 存储服务    |
 | mtc-test |    迁移测试用例     |
 | nfs_CSI  | 一键部署nfs的CSI服务 |
+|    nfs   |    nfs 一键部署   |
 |   src    |  一些自己编写测试代码   | 
 |  script  |     脚本目录      |
