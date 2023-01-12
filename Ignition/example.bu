@@ -1,0 +1,17 @@
+variant: fcos
+version: 1.4.0
+storage:
+  files:
+    - path: /etc/NetworkManager/system-connections/Wired\ connection\ 1.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=Wired connection 1
+          type=ethernet
+          interface-name=enp1s0
+          [ipv4]
+          address1=10.100.10.21/24,10.100.10.254
+          dns=10.100.10.19;
+          dns-search=
+          method=manual
