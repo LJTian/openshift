@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "rpmbuild_load start"
+echo "参数为 ba bb bp 等 与 rpmbuild -ba 使用一致"
 
 PWD=`pwd`
 ACTION=$1
