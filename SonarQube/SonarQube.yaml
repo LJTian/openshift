@@ -6,6 +6,7 @@ metadata:
     app: sonar-quber
 
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -19,12 +20,57 @@ spec:
   resources:
     requests:
       storage: 1G
-
 ---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-extensions
+  namespace: sonar-quber
+  labels:
+    app: sonar-quber
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-logs
+  namespace: sonar-quber
+  labels:
+    app: sonar-quber
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgresql-data
+  namespace: sonar-quber
+  labels:
+    app: sonar-quber
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql
   namespace: sonar-quber
   labels:
     app: sonar-quber
@@ -54,6 +100,9 @@ spec:
         - name: postgresql-data
           persistentVolumeClaim:
             claimName: postgresql-data
+        - name: postgresql
+          persistentVolumeClaim:
+            claimName: postgresql
       containers:
       - name: postgresql
         metadata:
@@ -76,7 +125,9 @@ spec:
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - name: postgresql-data
-            mountPath: /opt/sonarqube/data
+            mountPath: /var/lib/postgresql/data
+          - name: postgresql
+            mountPath: /var/lib/postgresql
 
 ---
 
@@ -98,6 +149,13 @@ spec:
         - name: sonarqube-data
           persistentVolumeClaim:
             claimName: sonarqube-data
+        - name: sonarqube-extensions
+          persistentVolumeClaim:
+            claimName: sonarqube-extensions
+        - name: sonarqube-logs
+          persistentVolumeClaim:
+            claimName: sonarqube-logs
+
       containers:
         - name: sonar-quber
           image: sonarqube:community
@@ -118,6 +176,10 @@ spec:
           volumeMounts:
             - name: sonarqube-data
               mountPath: /opt/sonarqube/data
+            - name: sonarqube-extensions
+              mountPath: /opt/sonarqube/extensions
+            - name: sonarqube-logs
+              mountPath: /opt/sonarqube/logs
 ---
 apiVersion: v1
 kind: Service
