@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"cobra-curl-cli/pkg/curl"
+	"cobra-curl-cli/pkg/db"
 	"cobra-curl-cli/pkg/define"
 	"fmt"
 	"os"
@@ -29,10 +30,14 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(AllArgs)
 		if AllArgs.SaveDB {
-			//if DbArgs.DbConnectUri == "" {
-			//	fmt.Println("数据库相关内容为空")
-			//	os.Exit(1)
-			//}
+			if DbArgs.DbConnectUri == "" {
+				fmt.Println("数据库相关内容为空")
+				os.Exit(1)
+			}
+			if err := db.StartDB(DbArgs.DbConnectUri); err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 		if err := curl.Run(AllArgs, DbArgs); err != nil {
 			fmt.Println(err)

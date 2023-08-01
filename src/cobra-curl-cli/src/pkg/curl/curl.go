@@ -31,7 +31,7 @@ func Run(tCurl define.TCurl, info define.DBInfo) (err error) {
 	return
 }
 
-func curl(uri string, timeout int) (data string, err error) {
+func curl(uri string, timeout int) (data []byte, err error) {
 
 	// 创建一个自定义的 HTTP Client，设置超时时间为 5 秒
 	httpClient := &http.Client{
@@ -54,7 +54,7 @@ func curl(uri string, timeout int) (data string, err error) {
 	}
 
 	// 输出响应内容
-	data = string(body)
-	fmt.Println("Response:", data)
+	data = body
+	fmt.Println("Response:", string(data))
 	return
 }
