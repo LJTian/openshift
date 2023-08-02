@@ -6,9 +6,26 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"math/rand"
+	"time"
 )
 
 var db *gorm.DB
+var ClientName string
+
+const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+// 生成随机字符串
+func generateRandomString(length int) string {
+
+	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
 
 func SendDb(data []byte) (err error) {
 
@@ -20,6 +37,8 @@ func SendDb(data []byte) (err error) {
 		fmt.Println(err)
 		return
 	}
+
+	log.ClientName = ClientName
 
 	db := db.Create(&log)
 	if db.Error == nil {
@@ -49,6 +68,8 @@ func StartDB(dsn string) (err error) {
 		fmt.Println(err)
 		return
 	}
+
+	ClientName = "clientName_" + generateRandomString(5)
 
 	db.AutoMigrate(&Logs{})
 	return

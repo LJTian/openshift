@@ -58,20 +58,25 @@ func main() {
 			"processingTime": processingTime.String(),
 			"serverTime":     time.Now().Format(time.RFC3339Nano), // 获取服务器当前时间并格式化为RFC3339格式
 			"node name":      nodeName,
+			"code":           http.StatusOK,
 		})
 	})
 
 	// 定义一个GET请求的路由处理函数
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello, Gin!",
+			"message":   "Hello, Gin!",
+			"node name": nodeName,
+			"code":      http.StatusOK,
 		})
 	})
 
 	// 添加健康检查路由
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
+			"status":    "ok",
+			"node name": nodeName,
+			"code":      http.StatusOK,
 		})
 	})
 
