@@ -2,6 +2,7 @@ package curl
 
 import (
 	"cobra-curl-cli/pkg/define"
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -33,9 +34,15 @@ func Run(tCurl define.TCurl, info define.DBInfo) (err error) {
 
 func curl(uri string, timeout int) (data []byte, err error) {
 
+	// 创建一个自定义的Transport，并忽略证书验证
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
 	// 创建一个自定义的 HTTP Client，设置超时时间为 5 秒
 	httpClient := &http.Client{
-		Timeout: time.Duration(timeout) * time.Second,
+		Timeout:   time.Duration(timeout) * time.Second,
+		Transport: tr,
 	}
 
 	// 发送 GET 请求

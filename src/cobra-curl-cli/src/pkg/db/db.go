@@ -70,7 +70,7 @@ func StartDB(dsn string) (err error) {
 	}
 
 	ClientName = "clientName_" + generateRandomString(5)
-
+	fmt.Printf(" ClientName is [%s]\n", ClientName)
 	db.AutoMigrate(&Logs{})
 	return
 }
