@@ -3,6 +3,7 @@ module cobra-curl-cli
 go 1.18
 
 require (
+	github.com/go-echarts/go-echarts/v2 v2.2.7
 	github.com/spf13/cobra v1.7.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2

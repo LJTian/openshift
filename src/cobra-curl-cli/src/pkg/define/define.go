@@ -13,3 +13,8 @@ type TCurl struct {
 type DBInfo struct {
 	DbConnectUri string
 }
+
+// Show 子命令参数
+type Show struct {
+	ClientName string
+}

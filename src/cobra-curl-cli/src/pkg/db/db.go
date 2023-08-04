@@ -29,10 +29,13 @@ func generateRandomString(length int) string {
 
 func SendDb(data []byte) (err error) {
 
+	if ClientName == "" {
+		ClientName = "clientName_" + generateRandomString(5)
+		fmt.Printf(" ClientName is [%s]\n", ClientName)
+	}
+
 	fmt.Printf("DBSend data is [%s]\n", data)
-
 	var log Logs
-
 	if err = json.Unmarshal(data, &log); err != nil {
 		fmt.Println(err)
 		return
@@ -68,9 +71,32 @@ func StartDB(dsn string) (err error) {
 		fmt.Println(err)
 		return
 	}
-
-	ClientName = "clientName_" + generateRandomString(5)
-	fmt.Printf(" ClientName is [%s]\n", ClientName)
 	db.AutoMigrate(&Logs{})
+	return
+}
+
+func ListClientName() (clientNames []string, err error) {
+
+	// 执行自定义的 SELECT 查询
+	var names []string
+	query := "SELECT client_name FROM logs.logs group by client_name"
+	result := db.Raw(query).Scan(&names)
+
+	if result.Error != nil {
+		panic("查询失败")
+	}
+	clientNames = names
+	return
+}
+
+func SelectLogsByClientName(name string) (logs []Logs, err error) {
+
+	// 执行自定义的 SELECT 查询
+	query := "SELECT * FROM logs.logs where client_name = ? "
+	result := db.Raw(query, name).Scan(&logs)
+
+	if result.Error != nil {
+		panic("查询失败")
+	}
 	return
 }
