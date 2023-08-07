@@ -1,40 +1,51 @@
 package echarts
 
 import (
+	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
+	"github.com/go-echarts/go-echarts/v2/types"
+	"net/http"
 )
 
-func generateLineItems() []opts.LineData {
+var Times []float64
+
+// GenerateLineItems 图表元素生成
+func GenerateLineItems() []opts.LineData {
+
+	items := make([]opts.LineData, 0)
 	// 生成一些示例数据
-	data := []opts.LineData{
-		{Value: 20},
-		{Value: 50},
-		{Value: 80},
-		{Value: 70},
-		{Value: 60},
-		{Value: 30},
-		{Value: 10},
+	for _, v := range Times {
+		items = append(items, opts.LineData{Value: v})
 	}
-	return data
+	return items
 }
 
-//
-//func ShowWeb(data []opts.LineData) error {
-//	// 创建一个折线图实例
-//	line := charts.NewLine()
-//
-//	// 设置图表的标题和数据
-//	line.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
-//		Title: "数据折线展示",
-//	}))
-//
-//	line.AddSeries("数据折线", data)
-//
-//	// 创建一个简单的 HTTP 服务器并将图表输出到浏览器
-//	http.Handle("/line", line)
-//	http.Handle("/", http.FileServer(http.Dir(".")))
-//	port := 8080
-//	addr := fmt.Sprintf(":%d", port)
-//	log.Printf("请在浏览器中访问 http://localhost:%d/line 查看数据折线图", port)
-//	log.Fatal(http.ListenAndServe(addr, nil))
-//}
+func httpserver(w http.ResponseWriter, _ *http.Request) {
+	// create a new line instance
+	line := charts.NewLine()
+	// set some global options like Title/Legend/ToolTip or anything else
+	line.SetGlobalOptions(
+		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
+		charts.WithTitleOpts(opts.Title{
+			Title:    "时间曲线图",
+			Subtitle: "时间曲线图",
+		}))
+
+	// Put data into instance
+	x := make([]int, 0)
+	for i := 1; i <= len(Times)/5; i++ {
+		x = append(x, i*5)
+	}
+	line.SetXAxis(x).
+		AddSeries("元素1 ", GenerateLineItems()).
+		SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: true}))
+	line.Render(w)
+}
+
+func ShowWeb(times []float64) {
+
+	Times = times
+	http.HandleFunc("/", httpserver)
+	http.ListenAndServe(":8081", nil)
+
+}

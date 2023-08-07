@@ -12,6 +12,7 @@ import (
 
 var db *gorm.DB
 var ClientName string
+var lastTime time.Time
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -34,15 +35,24 @@ func SendDb(data []byte) (err error) {
 		fmt.Printf(" ClientName is [%s]\n", ClientName)
 	}
 
+	if lastTime.IsZero() {
+		lastTime = time.Now()
+	}
+
 	fmt.Printf("DBSend data is [%s]\n", data)
 	var log Logs
-	if err = json.Unmarshal(data, &log); err != nil {
-		fmt.Println(err)
-		return
+	if len(data) != 0 {
+		if err = json.Unmarshal(data, &log); err != nil {
+			fmt.Println(err)
+			return
+		}
+		log.TimeSinceLast = float64(time.Since(lastTime))
+		lastTime = time.Now()
+	} else {
+		log.Code = 01
 	}
 
 	log.ClientName = ClientName
-
 	db := db.Create(&log)
 	if db.Error == nil {
 		fmt.Println(db.Error)
@@ -94,6 +104,18 @@ func SelectLogsByClientName(name string) (logs []Logs, err error) {
 	// 执行自定义的 SELECT 查询
 	query := "SELECT * FROM logs.logs where client_name = ? "
 	result := db.Raw(query, name).Scan(&logs)
+
+	if result.Error != nil {
+		panic("查询失败")
+	}
+	return
+}
+
+func ShowTimeLineLogsByClientName(name string) (times []float64, err error) {
+
+	// 执行自定义的 SELECT 查询
+	query := "SELECT time_since_last FROM logs.logs where client_name = ? "
+	result := db.Raw(query, name).Scan(&times)
 
 	if result.Error != nil {
 		panic("查询失败")

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"cobra-curl-cli/pkg/db"
+	"cobra-curl-cli/pkg/echarts"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -36,8 +37,11 @@ var showCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		timeline, err := db.ShowTimeLineLogsByClientName(ClientName)
 		for x, name := range logs {
 			fmt.Printf("[%d]:[%v]\n", x, name)
 		}
+
+		echarts.ShowWeb(timeline)
 	},
 }
