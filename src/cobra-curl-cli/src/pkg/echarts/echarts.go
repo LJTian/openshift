@@ -1,6 +1,7 @@
 package echarts
 
 import (
+	"fmt"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
 	"github.com/go-echarts/go-echarts/v2/types"
@@ -46,6 +47,7 @@ func ShowWeb(times []float64) {
 
 	Times = times
 	http.HandleFunc("/", httpserver)
+	fmt.Println("请访问【http://127.0.0.1:8081/】查看结果~")
 	http.ListenAndServe(":8081", nil)
 
 }
