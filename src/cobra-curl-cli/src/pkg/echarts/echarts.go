@@ -1,6 +1,7 @@
 package echarts
 
 import (
+	"cobra-curl-cli/pkg/db"
 	"fmt"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
@@ -9,13 +10,20 @@ import (
 )
 
 var Times []float64
+var clientName string
 
 // GenerateLineItems 图表元素生成
 func GenerateLineItems() []opts.LineData {
 
+	timeline, err := db.ShowTimeLineLogsByClientName(clientName)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	Times = timeline
 	items := make([]opts.LineData, 0)
 	// 生成一些示例数据
-	for _, v := range Times {
+	for _, v := range timeline {
 		items = append(items, opts.LineData{Value: v})
 	}
 	return items
@@ -43,9 +51,9 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 	line.Render(w)
 }
 
-func ShowWeb(times []float64) {
+func ShowWeb(name string) {
 
-	Times = times
+	clientName = name
 	http.HandleFunc("/", httpserver)
 	fmt.Println("请访问【http://127.0.0.1:8081/】查看结果~")
 	http.ListenAndServe(":8081", nil)

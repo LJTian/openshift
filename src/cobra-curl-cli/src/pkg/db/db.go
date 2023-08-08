@@ -46,7 +46,8 @@ func SendDb(data []byte) (err error) {
 			fmt.Println(err)
 			return
 		}
-		log.TimeSinceLast = float64(time.Since(lastTime))
+		NaTime := time.Since(lastTime).Milliseconds()
+		log.TimeSinceLast = float64(NaTime) / 1000
 		lastTime = time.Now()
 	} else {
 		log.Code = 01

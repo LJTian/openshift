@@ -32,16 +32,12 @@ var showCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		logs, err := db.SelectLogsByClientName(ClientName)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		timeline, err := db.ShowTimeLineLogsByClientName(ClientName)
-		for x, name := range logs {
-			fmt.Printf("[%d]:[%v]\n", x, name)
-		}
+		//logs, err := db.SelectLogsByClientName(ClientName)
+		//if err != nil {
+		//	fmt.Println(err)
+		//	os.Exit(1)
+		//}
 
-		echarts.ShowWeb(timeline)
+		echarts.ShowWeb(ClientName)
 	},
 }

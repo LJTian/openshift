@@ -14,7 +14,7 @@ var AllArgs define.TCurl
 var DbArgs define.DBInfo
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&AllArgs.Uri, "uri", "U", "http://127.0.0.1:8080/ping", "web service addr")
+	rootCmd.PersistentFlags().StringVarP(&AllArgs.Uri, "uri", "U", "", "web service addr")
 	rootCmd.PersistentFlags().IntVarP(&AllArgs.Times, "times", "T", 100, "Number of cycles")
 	rootCmd.PersistentFlags().IntVarP(&AllArgs.Intervals, "intervals", "I", 5, "Intervals")
 	rootCmd.PersistentFlags().IntVarP(&AllArgs.TimeOut, "timeout", "t", 5, "timeout period")
@@ -28,7 +28,11 @@ var rootCmd = &cobra.Command{
 	Short: "TCurl is an http access command client",
 	Long:  `TCurl is an http client mainly used for web service access and recording command line programs`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(AllArgs)
+		//fmt.Println(AllArgs)
+		if AllArgs.Uri == "" {
+			fmt.Println("URI 为空， 请使用 -h 查看使用说明")
+			os.Exit(1)
+		}
 		if AllArgs.SaveDB {
 			if DbArgs.DbConnectUri == "" {
 				fmt.Println("数据库相关内容为空")
