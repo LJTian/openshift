@@ -3,6 +3,7 @@ package curl
 import (
 	"cobra-curl-cli/pkg/define"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,20 +13,25 @@ import (
 )
 
 // Run 运行函数
-func Run(tCurl define.TCurl, info define.DBInfo) (err error) {
+func Run(tCurl define.TCurl, iNum int) (err error) {
 
-	fmt.Println("开始执行")
+	clineName := fmt.Sprintf("%s_%d", tCurl.ClientName, iNum)
+	var lastTime time.Time
 
 	for i := 0; i < tCurl.Times; i++ {
-		fmt.Printf("curl access uri [%s], 第 [%d] 次。\n", tCurl.Uri, i+1)
+		//fmt.Printf("curl access uri [%s], 第 [%d] 次。\n", tCurl.Uri, i+1)
 		data, err := curl(tCurl.Uri, tCurl.TimeOut)
-		if err != nil {
-			fmt.Printf("失败：[%v] \n ", err)
-		} else {
-			fmt.Println("成功")
-		}
 		if tCurl.SaveDB {
-			db.SendDb(data)
+			lastTime, err = db.SendDb(data, clineName, lastTime)
+			if err != nil {
+				return errors.New("SendDB err")
+			}
+		} else {
+			if err != nil {
+				fmt.Printf("curl access uri [%s], 第 [%d] 次。 失败：[%v] \n", tCurl.Uri, i+1, err)
+			} else {
+				fmt.Printf("curl access uri [%s], 第 [%d] 次。 成功 \n", tCurl.Uri, i+1)
+			}
 		}
 		time.Sleep(time.Second * time.Duration(tCurl.Intervals))
 	}
@@ -62,6 +68,6 @@ func curl(uri string, timeout int) (data []byte, err error) {
 
 	// 输出响应内容
 	data = body
-	fmt.Println("Response:", string(data))
+	//fmt.Println("Response:", string(data))
 	return
 }

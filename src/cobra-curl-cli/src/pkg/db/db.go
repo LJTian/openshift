@@ -6,40 +6,20 @@ import (
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"math/rand"
 	"time"
 )
 
 var db *gorm.DB
-var ClientName string
-var lastTime time.Time
 
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-// 生成随机字符串
-func generateRandomString(length int) string {
-
-	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
-
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
-}
-
-func SendDb(data []byte) (err error) {
-
-	if ClientName == "" {
-		ClientName = "clientName_" + generateRandomString(5)
-		fmt.Printf(" ClientName is [%s]\n", ClientName)
-	}
+func SendDb(data []byte, clineName string, lastTime time.Time) (RespTime time.Time, err error) {
 
 	if lastTime.IsZero() {
 		lastTime = time.Now()
 	}
 
-	fmt.Printf("DBSend data is [%s]\n", data)
+	RespTime = lastTime
+
+	//fmt.Printf("DBSend data is [%s]\n", data)
 	var log Logs
 	if len(data) != 0 {
 		if err = json.Unmarshal(data, &log); err != nil {
@@ -48,16 +28,16 @@ func SendDb(data []byte) (err error) {
 		}
 		NaTime := time.Since(lastTime).Milliseconds()
 		log.TimeSinceLast = float64(NaTime) / 1000
-		lastTime = time.Now()
+		RespTime = time.Now()
 	} else {
 		log.Code = 01
 	}
 
-	log.ClientName = ClientName
+	log.ClientName = clineName
 	db := db.Create(&log)
-	if db.Error == nil {
+	if db.Error != nil {
 		fmt.Println(db.Error)
-		return errors.New("插入数据库失败")
+		return RespTime, errors.New("插入数据库失败")
 	}
 
 	return
