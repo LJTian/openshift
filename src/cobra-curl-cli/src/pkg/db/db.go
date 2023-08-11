@@ -103,3 +103,16 @@ func ShowTimeLineLogsByClientName(name string) (times []float64, err error) {
 	}
 	return
 }
+
+func GetCoroutineNumByClientName(name string) (names []string, err error) {
+
+	// 执行自定义的 SELECT 查询
+	name = name + "%"
+	query := "SELECT client_name FROM logs.logs WHERE client_name LIKE ? GROUP BY client_name"
+	result := db.Raw(query, name).Scan(&names)
+
+	if result.Error != nil {
+		panic("查询失败")
+	}
+	return
+}
