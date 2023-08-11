@@ -11,14 +11,11 @@ import (
 
 var db *gorm.DB
 
-func SendDb(data []byte, clineName string, lastTime time.Time) (RespTime time.Time, err error) {
+func SendDb(data []byte, clineName string, lastTime time.Time) (err error) {
 
 	if lastTime.IsZero() {
 		lastTime = time.Now()
 	}
-
-	RespTime = lastTime
-
 	//fmt.Printf("DBSend data is [%s]\n", data)
 	var log Logs
 	if len(data) != 0 {
@@ -28,7 +25,6 @@ func SendDb(data []byte, clineName string, lastTime time.Time) (RespTime time.Ti
 		}
 		NaTime := time.Since(lastTime).Milliseconds()
 		log.TimeSinceLast = float64(NaTime) / 1000
-		RespTime = time.Now()
 	} else {
 		log.Code = 01
 	}
@@ -37,7 +33,7 @@ func SendDb(data []byte, clineName string, lastTime time.Time) (RespTime time.Ti
 	db := db.Create(&log)
 	if db.Error != nil {
 		fmt.Println(db.Error)
-		return RespTime, errors.New("插入数据库失败")
+		return errors.New("插入数据库失败")
 	}
 
 	return

@@ -21,19 +21,19 @@ func Run(tCurl define.TCurl, iNum int) (err error) {
 	for i := 0; i < tCurl.Times; i++ {
 		//fmt.Printf("curl access uri [%s], 第 [%d] 次。\n", tCurl.Uri, i+1)
 		data, err := curl(tCurl.Uri, tCurl.TimeOut)
+		if err != nil {
+			fmt.Printf("curl access uri [%s], 第 [%d] 次。 失败：[%v] \n", tCurl.Uri, i+1, err)
+		}
 		if tCurl.SaveDB {
-			lastTime, err = db.SendDb(data, clineName, lastTime)
+			err = db.SendDb(data, clineName, lastTime)
 			if err != nil {
 				return errors.New("SendDB err")
 			}
+			time.Sleep(time.Second * time.Duration(tCurl.Intervals))
+			lastTime = time.Now()
 		} else {
-			if err != nil {
-				fmt.Printf("curl access uri [%s], 第 [%d] 次。 失败：[%v] \n", tCurl.Uri, i+1, err)
-			} else {
-				fmt.Printf("curl access uri [%s], 第 [%d] 次。 成功 \n", tCurl.Uri, i+1)
-			}
+			fmt.Printf("curl access uri [%s], 第 [%d] 次。 成功 \n", tCurl.Uri, i+1)
 		}
-		time.Sleep(time.Second * time.Duration(tCurl.Intervals))
 	}
 	return
 }
