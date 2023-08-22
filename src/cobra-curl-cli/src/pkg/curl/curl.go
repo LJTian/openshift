@@ -3,7 +3,6 @@ package curl
 import (
 	"cobra-curl-cli/pkg/define"
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,16 +23,23 @@ func Run(tCurl define.TCurl, iNum int) (err error) {
 		if err != nil {
 			fmt.Printf("curl access uri [%s], 第 [%d] 次。 失败：[%v] \n", tCurl.Uri, i+1, err)
 		}
+
+		// 是否需要记录到数据库
 		if tCurl.SaveDB {
-			err = db.SendDb(data, clineName, lastTime)
-			if err != nil {
-				return errors.New("SendDB err")
+			DBerr := db.SendDb(data, clineName, lastTime)
+			if DBerr != nil {
+				fmt.Println("SendDB err, TestTool not return!")
+				continue
+				//return errors.New("SendDB err")
 			}
-			time.Sleep(time.Second * time.Duration(tCurl.Intervals))
-			lastTime = time.Now()
 		} else {
-			fmt.Printf("curl access uri [%s], 第 [%d] 次。 成功 \n", tCurl.Uri, i+1)
+			fmt.Printf("[%s] curl access uri [%s], 第 [%d] 次。 成功 data：[%v] \n",
+				clineName, tCurl.Uri, i+1, data)
 		}
+		if err == nil {
+			lastTime = time.Now()
+		}
+		time.Sleep(time.Second * time.Duration(tCurl.Intervals))
 	}
 	return
 }
