@@ -67,8 +67,8 @@ func lineBase() *charts.Line {
 
 	// Put data into instance
 	x := make([]int, 0)
-	for i := 1; i <= len(Times)/5; i++ {
-		x = append(x, i*5)
+	for i := 1; i <= len(Times); i++ {
+		x = append(x, i)
 	}
 
 	coroutineNum, err := db.GetCoroutineNumByClientName(clientName)
@@ -98,8 +98,8 @@ func scatterBase() *charts.Scatter {
 
 	// Put data into instance
 	x := make([]int, 0)
-	for i := 1; i <= len(Times)/5; i++ {
-		x = append(x, i*5)
+	for i := 1; i <= len(Times); i++ {
+		x = append(x, i)
 	}
 
 	coroutineNum, err := db.GetCoroutineNumByClientName(clientName)
@@ -129,8 +129,8 @@ func scatterShowLabel() *charts.Scatter {
 
 	// Put data into instance
 	x := make([]int, 0)
-	for i := 1; i <= len(Times)/5; i++ {
-		x = append(x, i*5)
+	for i := 1; i <= len(Times); i++ {
+		x = append(x, i)
 	}
 
 	coroutineNum, err := db.GetCoroutineNumByClientName(clientName)

@@ -36,10 +36,10 @@ func Run(tCurl define.TCurl, iNum int) (err error) {
 			fmt.Printf("[%s] curl access uri [%s], 第 [%d] 次。 成功 data：[%v] \n",
 				clineName, tCurl.Uri, i+1, data)
 		}
+		time.Sleep(time.Second * time.Duration(tCurl.Intervals))
 		if err == nil {
 			lastTime = time.Now()
 		}
-		time.Sleep(time.Second * time.Duration(tCurl.Intervals))
 	}
 	return
 }
