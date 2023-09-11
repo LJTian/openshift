@@ -1,0 +1,6 @@
+DATA_NAME=uccps-[VERSION]-data.tar
+DATA_MD5=a69e99ce21d2c1606f8752db8defb771
+DOMAIN=harbor.chinauos.com
+INSTALL_PATH=/data/Test
+CONTAINER_NAME=registry-x86_64.tar
+TEST_IMAGE=utccp-components/release:[VERSION]
