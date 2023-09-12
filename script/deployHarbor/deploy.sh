@@ -60,7 +60,8 @@ creatCerts(){
 	openssl req -x509 -new -nodes -key ca.key -subj "/CN=$DOMAIN" -days 3650 -out ca.crt
 	openssl req -new -sha256  -key ca.key -subj    "/C=CN/ST=GD/L=SZ/O=Global Security/OU=IT Department/CN=$DOMAIN" -reqexts SAN  -config <(cat /etc/pki/tls/openssl.cnf <(printf "[SAN]\nsubjectAltName=DNS:$DOMAIN"))  -out registry.csr
 	openssl x509 -req -days 3650  -in registry.csr -CA ca.crt -CAkey ca.key -CAcreateserial -extfile <(printf "subjectAltName=DNS:$DOMAIN") -out  registry.crt
-	cp *.crt /etc/pki/ca-trust/source/anchors/
+	cp ca.crt /etc/pki/ca-trust/source/anchors/$DOMAIN-ca.crt
+	cp registry.crt /etc/pki/ca-trust/source/anchors/$DOMAIN.crt
 	update-ca-trust
 }
 
