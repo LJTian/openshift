@@ -39,7 +39,7 @@ checkTools(){
 checkData(){
 	echo "开始计算 MD5 值，时间比较久，请耐性等待..."
 
-	if [ 0`md5sum $dataAllName` != 0$DATA_MD5 ] ; then 
+	if [ 0`md5sum $dataAllName | awk '{print $1}'` != 0$DATA_MD5 ] ; then 
 		echo "md5 值不一致"
 		exit 64
 	fi
@@ -79,18 +79,18 @@ tarData(){
 deployData(){
 	if [ -d $INSTALL_PATH ] ; then 
 		echo "$INSTALL_PATH 已经存在"
-		#exit 64
+		exit 64
 	fi
 
 	mkdir -p $INSTALL_PATH
-	#tarData
+	tarData
 	creatCerts
 	dataDirName=`ls $INSTALL_PATH/data/`
 	podman run -d --restart=always --name uccps-registry -v $INSTALL_PATH/certs:/certs:z -e REGISTRY_HTTP_ADDR=0.0.0.0:443 -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.crt -e REGISTRY_HTTP_TLS_KEY=/certs/ca.key -p 443:443 -v $INSTALL_PATH/data/$dataDirName/registry:/var/lib/registry:z localhost/registry
 }
 
 testHub(){
-	echo 127.0.0.1 $INSTALL_PATH
+	echo "127.0.0.1 $DOMAIN" >> /etc/hosts
 	podman pull $DOMAIN/$TEST_IMAGE
 	if [ 0$? != 00 ] ; then 
 		echo "拉取镜像失败 返回值为[$?]"
@@ -103,7 +103,7 @@ printENV
 # 检验所需要的工具是否安装
 checkTools
 # 检验离线仓库数据MD5
-#checkData
+checkData
 # 加载镜像仓库
 loadContain
 # 部署离线仓库
