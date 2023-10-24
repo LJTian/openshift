@@ -21,7 +21,7 @@ spec:
       serviceAccountName: nfs-client-provisioner
       containers:
         - name: nfs-client-provisioner
-          image: harbor.chinauos.com/uos-container/nfs-subdir-external-provisioner:1050a-4.0.2
+          image: registry.uniontech.com/uos-container/nfs-subdir-external-provisioner:1050a-4.0.2
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes

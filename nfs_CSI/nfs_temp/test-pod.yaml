@@ -1,19 +1,86 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-sc-pv-pvc
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim
+  namespace: test-sc-pv-pvc
+spec:
+  storageClassName: managed-nfs-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
 kind: Pod
 apiVersion: v1
 metadata:
-  name: test-pod
+  name: test-pod-1
+  namespace: test-sc-pv-pvc
 spec:
   containers:
-  - name: test-pod
-    image: busybox:stable
-    command:
-      - "/bin/sh"
-    args:
-      - "-c"
-      - "touch /mnt/SUCCESS && exit 0 || exit 1"
-    volumeMounts:
-      - name: nfs-pvc
-        mountPath: "/mnt"
+    - name: test-1
+      image: docker.io/ljtian/nfs-test:latest
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+      env:
+        - name: FILE_NAME
+          value: "我是pod1创建的"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc
+      persistentVolumeClaim:
+        claimName: test-claim
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod-2
+  namespace: test-sc-pv-pvc
+spec:
+  containers:
+    - name: test-2
+      image: docker.io/ljtian/nfs-test:latest
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+      env:
+        - name: FILE_NAME
+          value: "我是pod2创建的"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc
+      persistentVolumeClaim:
+        claimName: test-claim
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod-3
+  namespace: test-sc-pv-pvc
+spec:
+  containers:
+    - name: test-3
+      image: docker.io/ljtian/nfs-test:latest
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+      env:
+        - name: FILE_NAME
+          value: "我是pod3创建的"
   restartPolicy: "Never"
   volumes:
     - name: nfs-pvc
