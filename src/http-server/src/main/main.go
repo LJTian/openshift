@@ -15,6 +15,7 @@ func main() {
 	} else {
 		nodeName = "NULL"
 	}
+
 	fmt.Println("node Name is", nodeName)
 	hostName, _ := os.Hostname()
 	fmt.Println("HostName is", hostName)
@@ -22,6 +23,8 @@ func main() {
 	r := gin.Default()
 	r.GET("/", headFunc.PrintHead)
 	r.GET("/edit-file", headFunc.EditFile)
+
+	r.POST("/log", headFunc.LogPrint)
 
 	r.Run(":" + "8080")
 

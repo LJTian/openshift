@@ -55,3 +55,28 @@ func EditFile(ctx *gin.Context) {
 		"status":   "ok",
 	})
 }
+
+// HeadFunc 返回请求报文head内容
+func LogPrint(c *gin.Context) {
+
+	// 获取表单参数
+	fmt.Println("loginfo { ")
+	formParams := c.Request.PostForm
+	for key, values := range formParams {
+		for _, value := range values {
+			fmt.Printf("%s: %v\n", key, value)
+		}
+	}
+
+	// 获取JSON参数
+	var jsonParams map[string]interface{}
+	if err := c.ShouldBindJSON(&jsonParams); err == nil {
+		for key, value := range jsonParams {
+			fmt.Printf("%s: %v\n", key, value)
+		}
+	}
+	fmt.Println("} ")
+
+	// 返回200响应
+	c.Status(200)
+}
